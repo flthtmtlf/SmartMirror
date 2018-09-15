@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">SmartMirror</string>
+
+    <!-- default string -->
+    <string name="clock">현재시각</string>
+    <string name="sec">sec.</string>
+
+    <string name="lunch">점심 식단표</string>
+    <string name="dinner">저녁 식단표</string>
+
+    <string name="weather">날씨</string>
+    <string name="air_status">대기질 (한국환경공단 제공)</string>
+
+    <string name="schedule">일정</string>
+    <string name="news">뉴스</string>
+
+    <string name="pm10">미세먼지</string>
+    <string name="pm25">초미세먼지</string>
+    <string name="comp">종합지수</string>
+
+    <string name="best">좋음</string>
+    <string name="good">보통</string>
+    <string name="bad">나쁨</string>
+    <string name="worst">매우 나쁨</string>
+    <string name="unknown">데이터 없음</string>
+
+
+</resources>
