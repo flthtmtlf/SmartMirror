@@ -16,6 +16,9 @@ public class IntroActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        setTheme(R.style.AppTheme_NoActionBar);
+        
         setContentView(R.layout.activity_intro);
         
         Handler mHandler = new Handler();

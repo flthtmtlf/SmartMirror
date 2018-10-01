@@ -12,20 +12,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="64dp"
         android:text="@string/clock"
-        android:textSize="45sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textSize="90sp"
+        app:layout_constraintBottom_toTopOf="@+id/news_list"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/sec"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginStart="4dp"
         android:text="@string/sec"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textSize="28sp"
+        app:layout_constraintBottom_toBottomOf="@+id/clock"
         app:layout_constraintStart_toEndOf="@+id/clock" />
 
     <TextView
@@ -34,18 +35,18 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:text="@string/lunch"
+        android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/lunch"
-        app:layout_constraintEnd_toEndOf="@+id/lunch"
         app:layout_constraintStart_toStartOf="@+id/lunch" />
 
     <TextView
         android:id="@+id/lunch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:layout_marginStart="16dp"
         android:text="@string/lunch"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/clock"
         app:layout_constraintStart_toEndOf="@+id/sec" />
 
     <TextView
@@ -54,27 +55,28 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:text="@string/dinner"
+        android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/dinner"
-        app:layout_constraintEnd_toEndOf="@+id/dinner"
         app:layout_constraintStart_toStartOf="@+id/dinner" />
 
     <TextView
         android:id="@+id/dinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="16dp"
         android:text="@string/dinner"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/lunch"
         app:layout_constraintStart_toEndOf="@+id/lunch" />
 
     <TextView
         android:id="@+id/air_hint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginStart="72dp"
         android:text="@string/air_status"
+        android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/pm10_hint"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -83,8 +85,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="64dp"
         android:text="@string/pm10"
+        android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/pm25_hint"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -93,8 +96,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="64dp"
         android:text="@string/pm25"
+        android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/comp_hint"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -103,9 +107,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="64dp"
         android:text="@string/comp"
-        app:layout_constraintBottom_toTopOf="@+id/clock"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/date"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
@@ -114,6 +119,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:text="@string/pm10"
+        android:textSize="16sp"
         app:layout_constraintStart_toEndOf="@+id/pm25_hint"
         app:layout_constraintTop_toTopOf="@+id/pm10_hint" />
 
@@ -123,6 +129,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:text="@string/pm25"
+        android:textSize="16sp"
         app:layout_constraintStart_toEndOf="@+id/pm25_hint"
         app:layout_constraintTop_toTopOf="@+id/pm25_hint" />
 
@@ -132,6 +139,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:text="@string/comp"
+        android:textSize="16sp"
         app:layout_constraintStart_toEndOf="@+id/pm25_hint"
         app:layout_constraintTop_toTopOf="@+id/comp_hint" />
 
@@ -140,30 +148,29 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="72dp"
         android:text="@string/weather"
+        android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/weather_icon"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
         android:id="@+id/weather_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:layout_marginBottom="16dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="64dp"
         app:layout_constraintBottom_toTopOf="@+id/air_hint"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_info_details" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/weather"
+        android:id="@+id/weather_T1H"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:text="@string/weather"
-        app:layout_constraintBottom_toBottomOf="@+id/weather_icon"
+        android:textSize="30sp"
         app:layout_constraintStart_toEndOf="@+id/weather_icon"
         app:layout_constraintTop_toTopOf="@+id/weather_icon" />
 
@@ -172,18 +179,91 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="64dp"
         android:text="@string/schedule"
-        app:layout_constraintBottom_toTopOf="@+id/news"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/news_list"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <ListView
+        android:id="@+id/news_list"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="64dp"
+        android:layout_marginEnd="64dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/news" />
 
     <TextView
         android:id="@+id/news"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="8dp"
         android:text="@string/news"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/news_list"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/news_list" />
+
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="64dp"
+        android:text="@string/date"
+        android:textSize="28sp"
+        app:layout_constraintBottom_toTopOf="@+id/clock"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/weather_REH"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="TextView"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/weather_T1H"
+        app:layout_constraintStart_toEndOf="@+id/weather_T1H" />
+
+    <TextView
+        android:id="@+id/weather_etc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="TextView"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/weather_icon"
+        app:layout_constraintStart_toEndOf="@+id/weather_icon" />
+
+    <!--
+
+    <TextView
+
+        android:layout_width="fill_parent"
+
+        android:layout_height="fill_parent"
+
+        android:gravity="center"
+
+        android:singleLine="true"
+
+        android:ellipsize="marquee"
+
+        android:marqueeRepeatLimit="marquee_forever"
+
+        android:maxLines="1"
+
+        android:focusableInTouchMode="true"
+
+        android:focusable="true"
+
+        android:text="@string/SDcard_CanNotReadWrite"
+
+        android:scrollHorizontally="true" />
+
+    -->
 </android.support.constraint.ConstraintLayout>

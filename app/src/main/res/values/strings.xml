@@ -1,7 +1,13 @@
 <resources>
     <string name="app_name">SmartMirror</string>
 
+    <string name="project_name">김포고등학교 스마트 미러 시스템</string>
+    <string name="team_name">파란색_새우튀김 조</string>
+
+    <string name="init">초기 설정 중&#8230;\n잠시만 기다려 주십시오.</string>
+
     <!-- default string -->
+    <string name="date">오늘 날짜</string>
     <string name="clock">현재시각</string>
     <string name="sec">sec.</string>
 
@@ -12,7 +18,7 @@
     <string name="air_status">대기질 (한국환경공단 제공)</string>
 
     <string name="schedule">일정</string>
-    <string name="news">뉴스</string>
+    <string name="news">오늘의 뉴스</string>
 
     <string name="pm10">미세먼지</string>
     <string name="pm25">초미세먼지</string>
