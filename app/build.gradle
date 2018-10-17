@@ -6,8 +6,8 @@ android {
         applicationId "kr.hs.gimpo.smartmirror"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 11
-        versionName "1.0-black"
+        versionCode 12
+        versionName "1.1-black"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

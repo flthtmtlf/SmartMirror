@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.hyunjun.school.School;
 import org.hyunjun.school.SchoolMenu;
@@ -75,89 +76,90 @@ public class MainActivity extends AppCompatActivity {
         
         @Override
         public void run() {
-            while(true) {
-                time = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.getDefault()).format(System.currentTimeMillis());
-                String temp[] = time.split("-");
-                year = Integer.parseInt(temp[0]); month = Integer.parseInt(temp[1]); day = Integer.parseInt(temp[2]);
-                int thisDay = day;
-    
-                try {
-                    NextNewsData.clear();
+            try {
+                while(true) {
+                    time = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.getDefault()).format(System.currentTimeMillis());
+                    String temp[] = time.split("-");
+                    year = Integer.parseInt(temp[0]); month = Integer.parseInt(temp[1]); day = Integer.parseInt(temp[2]);
+                    int thisDay = day;
+        
+                    try {
+                        NextNewsData.clear();
                 
                 /*
                 NextNewsData.add("[단독] 스마트 미러 개발팀 '파란색 새우튀김', 팀명을 정한 계기는?");
                 NextNewsData.add("[단독] 김포고등학교 스마트 미러 시스템 개발 중... 10월 1일 월요일 공개");
                 NextNewsData.add("[단독] 스마트 미러 개발팀 \"도와주는 사람 아무도 없어... 팀끼리 고군분투\"");
                 */
-        
-                    Document doc = Jsoup.connect("http://yonhapnews.co.kr").get();
-        
-                    //테스트1
-                    Elements titles= doc.select("div.news-con h1.tit-news");
-        
-                    System.out.println("-------------------------------------------------------------");
-                    for(Element e: titles){
-                        System.out.println("title: " + e.text());
-                        NextNewsData.add(e.text().trim());
+            
+                        Document doc = Jsoup.connect("http://yonhapnews.co.kr").get();
+            
+                        //테스트1
+                        Elements titles= doc.select("div.news-con h1.tit-news");
+            
+                        System.out.println("-------------------------------------------------------------");
+                        for(Element e: titles){
+                            System.out.println("title: " + e.text());
+                            NextNewsData.add(e.text().trim());
+                        }
+            
+                        //테스트2
+                        titles= doc.select("div.news-con h2.tit-news");
+            
+                        System.out.println("-------------------------------------------------------------");
+                        for(Element e: titles){
+                            System.out.println("title: " + e.text());
+                            NextNewsData.add(e.text().trim());
+                        }
+            
+                        //테스트3
+                        titles= doc.select("li.section02 div.con h2.news-tl");
+            
+                        System.out.println("-------------------------------------------------------------");
+                        for(Element e: titles){
+                            System.out.println("title: " + e.text());
+                            NextNewsData.add(e.text().trim());
+                        }
+                        System.out.println("-------------------------------------------------------------");
+            
+            
+                    } catch(Exception e) {
+                        e.printStackTrace();
                     }
         
-                    //테스트2
-                    titles= doc.select("div.news-con h2.tit-news");
+                    NextNewsData.add(NextNewsData.get(0));
+                    newsData = NextNewsData.toArray(new String[NextNewsData.size()]);
         
-                    System.out.println("-------------------------------------------------------------");
-                    for(Element e: titles){
-                        System.out.println("title: " + e.text());
-                        NextNewsData.add(e.text().trim());
-                    }
+                    adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.news_item, newsData);
         
-                    //테스트3
-                    titles= doc.select("li.section02 div.con h2.news-tl");
+                    listView = findViewById(R.id.news_list);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            listView.setAdapter(adapter);
+                        }
+                    });
         
-                    System.out.println("-------------------------------------------------------------");
-                    for(Element e: titles){
-                        System.out.println("title: " + e.text());
-                        NextNewsData.add(e.text().trim());
-                    }
-                    System.out.println("-------------------------------------------------------------");
-        
-        
-                } catch(Exception e) {
-                    e.printStackTrace();
-                }
-                
-                NextNewsData.add(NextNewsData.get(0));
-                newsData = NextNewsData.toArray(new String[NextNewsData.size()]);
-    
-                adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.news_item, newsData);
-    
-                listView = findViewById(R.id.news_list);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        listView.setAdapter(adapter);
-                    }
-                });
-    
-                while(thisDay == day) {
-                    try {
-                        for(i = 0; i < NextNewsData.size() - 1; i++) {
-                            int t = 120;
-                            listView.smoothScrollToPosition(i);
-                            Thread.sleep(t);
+                    while(thisDay == day) {
+                        try {
+                            for(i = 0; i < NextNewsData.size() - 1; i++) {
+                                int t = 120;
+                                listView.smoothScrollToPosition(i);
+                                Thread.sleep(t);
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        listView.setSelection(i);
+                                    }
+                                });
+                                Thread.sleep(5000 - t);
+                            }
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    listView.setSelection(i);
+                                    listView.setSelection(0);
                                 }
                             });
-                            Thread.sleep(5000 - t);
-                        }
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                listView.setSelection(0);
-                            }
-                        });
                         
                         /*
                         // 뉴스 기사의 순서를 바꿔서 adapter를 재설정해 주면 맨 위에 잘 뜬다!
@@ -177,11 +179,23 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
                         */
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    newsData = new String[1];
+                                    newsData[0] = "에러가 발생했습니다.";
+                                    adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.news_item, newsData);
+                                    listView.setAdapter(adapter);
+                                    listView.setSelection(0);
+                                }
+                            });
+                        }
                     }
                 }
-                
+            } catch(Exception e) {
+                e.printStackTrace();
             }
         }
     });
@@ -528,6 +542,21 @@ public class MainActivity extends AppCompatActivity {
         scheduleHandler = new ScheduleHandler();
         weatherHandler = new WeatherHandler();
         
+        Button open = findViewById(R.id.open);
+        open.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "접근 확인됨. 패널을 펼칩니다.", Toast.LENGTH_SHORT).show();
+            }
+        });
+        
+        Button close = findViewById(R.id.close);
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "안녕히 가십시오.", Toast.LENGTH_SHORT).show();
+            }
+        });
         
         initScreen();
         
