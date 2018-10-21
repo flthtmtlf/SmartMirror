@@ -227,9 +227,9 @@ public class MainActivity extends AppCompatActivity {
                     menu_list = api.getMonthlyMenu(year, month);
                     schedules_list = api.getMonthlySchedule(year, month);
         
-                    lunchToday = menu_list.get(day).lunch;
-                    dinnerToday = menu_list.get(day).dinner;
-                    scheduleToday = schedules_list.get(day).schedule;
+                    lunchToday = menu_list.get(day - 1).lunch;
+                    dinnerToday = menu_list.get(day - 1).dinner;
+                    scheduleToday = schedules_list.get(day - 1).schedule;
         
                     Message message = scheduleHandler.obtainMessage();
                     scheduleHandler.sendMessage(message);
