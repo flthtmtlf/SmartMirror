@@ -542,6 +542,11 @@ public class MainActivity extends AppCompatActivity {
                 
             } catch (Exception e) {
                 e.printStackTrace();
+                weatherETC = "에러가 발생했습니다.";
+                weatherT1H = " - °C";
+                weatherREH = " - %";
+                Message message = weatherHandler.obtainMessage();
+                weatherHandler.sendMessage(message);
             }
         }
     });
