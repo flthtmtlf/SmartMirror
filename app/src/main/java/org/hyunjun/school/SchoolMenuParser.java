@@ -93,6 +93,13 @@ public class SchoolMenuParser {
                 menu.dinner = "";
                 continue;
             }
+            
+            chunk[i] = chunk[i]
+                    .replaceAll("\\.|[0-9]|[a-z]|[A-Z]", "")
+                    // 정규표현식을 사용하여 '.', 숫자, 알파벳 소문자와 대문자를 삭제한다.
+                    .replace("()", "");
+                    // '()' 즉 내용 없이 괄호만 있는 것울 삭제한다.
+                    // '()'는 정규표현식으로 인식되므로 정규표현식이 인식되지 않는 String.replace()를 쓴다.
 
             switch (parsingMode) {
                 case 0:
