@@ -1,19 +1,24 @@
 package kr.hs.gimpo.smartmirror;
 
+import android.animation.Animator;
+import android.content.Context;
+import android.content.res.Resources;
 import android.os.Handler;
 import android.os.Message;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.hyunjun.school.School;
 import org.hyunjun.school.SchoolMenu;
@@ -25,9 +30,7 @@ import org.jsoup.select.Elements;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -35,21 +38,31 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     
-    TextView clock_date, clock_hm, clock_s, lunch, dinner, schedules, pm10, pm25, comp, wt1h, wreh, wetc;
+    TextView clock_date, clock_hm, clock_s,      // Time
+            lunch, dinner, schedules,            // School
+            pm10, pm25, comp, wt1h, wreh, wetc;  // Weather
     ImageView wicon;
-    TimeHandler timeHandler; ScheduleHandler scheduleHandler; WeatherHandler weatherHandler;
+    TimeHandler timeHandler;
+    ScheduleHandler scheduleHandler;
+    WeatherHandler weatherHandler;
     final String SchoolCode = "J100000510"; // 김포고등학교의 학교코드는 'J100000510'이다!
-    String date, time, h, m, s, hm; String lunchToday, dinnerToday, scheduleToday; String pm10data, pm25data, compdata;
+    String date, time, h, m, s, hm;
+    String lunchToday, dinnerToday, scheduleToday;
+    String pm10data, pm25data, compdata;
     int year, month, day;
-    int weatherIcon; String weatherT1H, weatherREH, weatherETC;
-    List<SchoolMenu> menu_list; List<SchoolSchedule> schedules_list;
+    int weatherIcon;
+    String weatherT1H, weatherREH, weatherETC;
+    List<SchoolMenu> menu_list;
+    List<SchoolSchedule> schedules_list;
+    
     Thread clock = new Thread(new Runnable() {
         @Override
         public void run() {
             while(true) {
                 try {
                     long pre = System.currentTimeMillis();
-                    time = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.getDefault()).format(System.currentTimeMillis());
+                    time = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.getDefault())
+                            .format(System.currentTimeMillis());
                     String ymd_hms[] = time.split("-");
                     day = Integer.parseInt(ymd_hms[2]);
                     h = ymd_hms[3]; m = ymd_hms[4]; s = ymd_hms[5];
@@ -78,26 +91,34 @@ public class MainActivity extends AppCompatActivity {
         public void run() {
             try {
                 while(true) {
-                    time = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.getDefault()).format(System.currentTimeMillis());
+                    time = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.getDefault())
+                            .format(System.currentTimeMillis());
                     String temp[] = time.split("-");
-                    year = Integer.parseInt(temp[0]); month = Integer.parseInt(temp[1]); day = Integer.parseInt(temp[2]);
+                    year = Integer.parseInt(temp[0]);
+                    month = Integer.parseInt(temp[1]);
+                    day = Integer.parseInt(temp[2]);
                     int thisDay = day;
         
                     try {
                         NextNewsData.clear();
                 
-                /*
-                NextNewsData.add("[단독] 스마트 미러 개발팀 '파란색 새우튀김', 팀명을 정한 계기는?");
-                NextNewsData.add("[단독] 김포고등학교 스마트 미러 시스템 개발 중... 10월 1일 월요일 공개");
-                NextNewsData.add("[단독] 스마트 미러 개발팀 \"도와주는 사람 아무도 없어... 팀끼리 고군분투\"");
-                */
+                
+                    NextNewsData
+                            .add("[단독] 스마트 미러 개발팀 '파란색 새우튀김', 팀명을 정한 계기는?");
+                    NextNewsData
+                            .add("[단독] 김포고등학교 스마트 미러 시스템 개발 중... " +
+                                    "10월 31일 수요일 공개");
+                    NextNewsData
+                            .add("[단독] 스마트 미러 개발팀 " +
+                                    "\"도와주는 사람 아무도 없어... 팀끼리 고군분투\"");
+                
             
                         Document doc = Jsoup.connect("http://yonhapnews.co.kr").get();
             
                         //테스트1
                         Elements titles= doc.select("div.news-con h1.tit-news");
             
-                        System.out.println("-------------------------------------------------------------");
+                        System.out.println("-----------------------------------------------------");
                         for(Element e: titles){
                             System.out.println("title: " + e.text());
                             NextNewsData.add(e.text().trim());
@@ -106,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
                         //테스트2
                         titles= doc.select("div.news-con h2.tit-news");
             
-                        System.out.println("-------------------------------------------------------------");
+                        System.out.println("-----------------------------------------------------");
                         for(Element e: titles){
                             System.out.println("title: " + e.text());
                             NextNewsData.add(e.text().trim());
@@ -115,12 +136,12 @@ public class MainActivity extends AppCompatActivity {
                         //테스트3
                         titles= doc.select("li.section02 div.con h2.news-tl");
             
-                        System.out.println("-------------------------------------------------------------");
+                        System.out.println("-----------------------------------------------------");
                         for(Element e: titles){
                             System.out.println("title: " + e.text());
                             NextNewsData.add(e.text().trim());
                         }
-                        System.out.println("-------------------------------------------------------------");
+                        System.out.println("-----------------------------------------------------");
             
             
                     } catch(Exception e) {
@@ -130,7 +151,11 @@ public class MainActivity extends AppCompatActivity {
                     NextNewsData.add(NextNewsData.get(0));
                     newsData = NextNewsData.toArray(new String[NextNewsData.size()]);
         
-                    adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.news_item, newsData);
+                    adapter = new ArrayAdapter<>(
+                            getApplicationContext(),
+                            R.layout.news_item,
+                            newsData
+                    );
         
                     listView = findViewById(R.id.news_list);
                     runOnUiThread(new Runnable() {
@@ -160,25 +185,7 @@ public class MainActivity extends AppCompatActivity {
                                     listView.setSelection(0);
                                 }
                             });
-                        
-                        /*
-                        // 뉴스 기사의 순서를 바꿔서 adapter를 재설정해 주면 맨 위에 잘 뜬다!
-                    
-                        NextNewsData.clear();
-                        for(int i = 0; i < newsData.length - 1; i++) {
-                            NextNewsData.add(newsData[i + 1]);
-                        }
-                        NextNewsData.add(NextNewsData.size(), newsData[0]);
-    
-                        newsData = NextNewsData.toArray(new String[NextNewsData.size()]);
-                        adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, newsData);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                listView.setAdapter(adapter);
-                            }
-                        });
-                        */
+                            
                         } catch (Exception e) {
                             e.printStackTrace();
                             runOnUiThread(new Runnable() {
@@ -186,7 +193,11 @@ public class MainActivity extends AppCompatActivity {
                                 public void run() {
                                     newsData = new String[1];
                                     newsData[0] = "에러가 발생했습니다.";
-                                    adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.news_item, newsData);
+                                    adapter = new ArrayAdapter<>(
+                                            getApplicationContext(),
+                                            R.layout.news_item,
+                                            newsData
+                                    );
                                     listView.setAdapter(adapter);
                                     listView.setSelection(0);
                                 }
@@ -204,18 +215,21 @@ public class MainActivity extends AppCompatActivity {
         public void run() {
             while(true) {
                 School api = new School(School.Type.HIGH, School.Region.GYEONGGI, SchoolCode);
-                time = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.getDefault()).format(System.currentTimeMillis());
+                time = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.getDefault())
+                        .format(System.currentTimeMillis());
                 String temp[] = time.split("-");
-                year = Integer.parseInt(temp[0]); month = Integer.parseInt(temp[1]); day = Integer.parseInt(temp[2]);
+                year = Integer.parseInt(temp[0]);
+                month = Integer.parseInt(temp[1]);
+                day = Integer.parseInt(temp[2]);
                 int thisDay = day;
     
                 try {
                     menu_list = api.getMonthlyMenu(year, month);
                     schedules_list = api.getMonthlySchedule(year, month);
         
-                    lunchToday = menu_list.get(day - 1).lunch;
-                    dinnerToday = menu_list.get(day - 1).dinner;
-                    scheduleToday = schedules_list.get(day - 1).schedule;
+                    lunchToday = menu_list.get(day).lunch;
+                    dinnerToday = menu_list.get(day).dinner;
+                    scheduleToday = schedules_list.get(day).schedule;
         
                     Message message = scheduleHandler.obtainMessage();
                     scheduleHandler.sendMessage(message);
@@ -238,11 +252,15 @@ public class MainActivity extends AppCompatActivity {
         Map<String, String> rawWeatherValue = new HashMap<>();
     
         boolean isInit = false;
+        final String SERVICE_KEY=
+                "uTRaH16OBrv%2BrnhI1l%2BhctIkvNd6DwX%2FxpnCRXHGHLj" +
+                        "pRpVqxmQJ7Q4cXR0wucoc%2Bx3v8hg%2BsVZRvhPTzXS1xw%3D%3D";
         
         @Override
         public void run() {
             while(true) {
-                time = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.getDefault()).format(System.currentTimeMillis());
+                time = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.getDefault())
+                        .format(System.currentTimeMillis());
                 String ymd_hms[] = time.split("-");
                 h = ymd_hms[3];
                 thisHour = h;
@@ -279,37 +297,53 @@ public class MainActivity extends AppCompatActivity {
         private void initAirData() {
             try {
                 Log.i("MainActivity", "weather : init - air quality");
-                Document doc = Jsoup.connect("http://openapi.airkorea.or.kr/openapi/services/rest/ArpltnInforInqireSvc/getMsrstnAcctoRltmMesureDnsty?serviceKey="+
-                        "uTRaH16OBrv%2BrnhI1l%2BhctIkvNd6DwX%2FxpnCRXHGHLjpRpVqxmQJ7Q4cXR0wucoc%2Bx3v8hg%2BsVZRvhPTzXS1xw%3D%3D"+
-                        "&numOfRows=1&pageSize=1&pageNo=1&startPage=1&stationName=%EC%82%AC%EC%9A%B0%EB%8F%99&dataTerm=DAILY&ver=1.3").get();
+                Document doc = Jsoup
+                        .connect("http://openapi.airkorea.or.kr/openapi/services/rest/" +
+                                "ArpltnInforInqireSvc/getMsrstnAcctoRltmMesureDnsty?" +
+                                "serviceKey="+ SERVICE_KEY +
+                                "&numOfRows=1&pageSize=1&pageNo=1&startPage=1&" +
+                                "stationName=%EC%82%AC%EC%9A%B0%EB%8F%99&dataTerm=DAILY&ver=1.3")
+                        .get();
         
                 String resultCode = doc.getElementsByTag("resultCode").text().trim();
                 if(resultCode.compareTo("00") == 0) {
-                    pm10value = doc.getElementsByTag("pm10Value").text().trim();     // 미세먼지(PM10) 측정값
-                    pm10grade = doc.getElementsByTag("pm10Grade1h").text().trim();   // 미세먼지 측정등급
-                    pm25value = doc.getElementsByTag("pm25Value").text().trim();     // 초미세먼지(PM2.5) 측정값
-                    pm25grade = doc.getElementsByTag("pm25Grade1h").text().trim();   // 초미세먼지 측정등급
-                    compvalue = doc.getElementsByTag("khaiValue").text().trim();     // 통합대기질지수 측정값
-                    compgrade = doc.getElementsByTag("khaiGrade").text().trim();     // 통합대기질지수 측정등급
+                    pm10value = doc.getElementsByTag("pm10Value").text().trim();
+                    pm10grade = doc.getElementsByTag("pm10Grade1h").text().trim();
+                    pm25value = doc.getElementsByTag("pm25Value").text().trim();
+                    pm25grade = doc.getElementsByTag("pm25Grade1h").text().trim();
+                    compvalue = doc.getElementsByTag("khaiValue").text().trim();
+                    compgrade = doc.getElementsByTag("khaiGrade").text().trim();
                     
                     // 숫자로 나오는 등급을 국어로 변환
                     if(pm10grade.compareTo("")!=0) {
-                        pm10grade = pm10grade.replace("1", getResources().getString(R.string.best));
-                        pm10grade = pm10grade.replace("2", getResources().getString(R.string.good));
-                        pm10grade = pm10grade.replace("3", getResources().getString(R.string.bad));
-                        pm10grade = pm10grade.replace("4", getResources().getString(R.string.worst));
+                        pm10grade = pm10grade
+                                .replace("1", getResources().getString(R.string.best));
+                        pm10grade = pm10grade
+                                .replace("2", getResources().getString(R.string.good));
+                        pm10grade = pm10grade
+                                .replace("3", getResources().getString(R.string.bad));
+                        pm10grade = pm10grade
+                                .replace("4", getResources().getString(R.string.worst));
                     } else pm10grade = "-";
                     if(pm25grade.compareTo("")!=0) {
-                        pm25grade = pm25grade.replace("1", getResources().getString(R.string.best));
-                        pm25grade = pm25grade.replace("2", getResources().getString(R.string.good));
-                        pm25grade = pm25grade.replace("3", getResources().getString(R.string.bad));
-                        pm25grade = pm25grade.replace("4", getResources().getString(R.string.worst));
+                        pm25grade = pm25grade
+                                .replace("1", getResources().getString(R.string.best));
+                        pm25grade = pm25grade
+                                .replace("2", getResources().getString(R.string.good));
+                        pm25grade = pm25grade
+                                .replace("3", getResources().getString(R.string.bad));
+                        pm25grade = pm25grade
+                                .replace("4", getResources().getString(R.string.worst));
                     } else pm25grade = "-";
                     if(compgrade.compareTo("")!=0) {
-                        compgrade = compgrade.replace("1", getResources().getString(R.string.best));
-                        compgrade = compgrade.replace("2", getResources().getString(R.string.good));
-                        compgrade = compgrade.replace("3", getResources().getString(R.string.bad));
-                        compgrade = compgrade.replace("4", getResources().getString(R.string.worst));
+                        compgrade = compgrade
+                                .replace("1", getResources().getString(R.string.best));
+                        compgrade = compgrade
+                                .replace("2", getResources().getString(R.string.good));
+                        compgrade = compgrade
+                                .replace("3", getResources().getString(R.string.bad));
+                        compgrade = compgrade
+                                .replace("4", getResources().getString(R.string.worst));
                     } else compgrade = "-";
                     
                     // 측정값의 무결성 검증
@@ -333,13 +367,18 @@ public class MainActivity extends AppCompatActivity {
                 Log.i("MainActivity", "weather : init - weather status");
                 Calendar weatherTime = Calendar.getInstance();
                 
-                if(Integer.parseInt(new SimpleDateFormat("mm", Locale.getDefault()).format(weatherTime.getTime())) < 40) {
+                if(Integer.parseInt(
+                        new SimpleDateFormat("mm", Locale.getDefault())
+                                .format(weatherTime.getTime())) < 40
+                        ) {
                         weatherTime.add(Calendar.HOUR, -1);
                 }
-                String ymd_hms[] = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.getDefault()).format(weatherTime.getTime()).split("-");
+                String ymd_hms[] =
+                        new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.getDefault())
+                                .format(weatherTime.getTime()).split("-");
                 
                 // http://newsky2.kma.go.kr/service/SecndSrtpdFrcstInfoService2/ForecastGrib?
-                // serviceKey=uTRaH16OBrv%2BrnhI1l%2BhctIkvNd6DwX%2FxpnCRXHGHLjpRpVqxmQJ7Q4cXR0wucoc%2Bx3v8hg%2BsVZRvhPTzXS1xw%3D%3D&
+                // serviceKey=SERVICE_KEY&
                 // base_date=20180929& // 날짜
                 // base_time=2100&     // 시간
                 // nx=55&              // 김포 지역의 좌표 (x = 55, y = 128)
@@ -351,8 +390,9 @@ public class MainActivity extends AppCompatActivity {
                 // _type=xml           // xml 포맷으로 응답
                 
                 Document doc = Jsoup.connect(
-                        "http://newsky2.kma.go.kr/service/SecndSrtpdFrcstInfoService2/ForecastGrib?" +
-                                "serviceKey=uTRaH16OBrv%2BrnhI1l%2BhctIkvNd6DwX%2FxpnCRXHGHLjpRpVqxmQJ7Q4cXR0wucoc%2Bx3v8hg%2BsVZRvhPTzXS1xw%3D%3D&" +
+                        "http://newsky2.kma.go.kr/service/SecndSrtpdFrcstInfoService2/" +
+                                "ForecastGrib?" +
+                                "serviceKey=" + SERVICE_KEY + "&" +
                                 "base_date=" + ymd_hms[0] + ymd_hms[1] + ymd_hms[2] + "&" +
                                 "base_time=" + ymd_hms[3] + "00" + "&" +
                                 "nx=55&ny=128&" +
@@ -365,24 +405,36 @@ public class MainActivity extends AppCompatActivity {
                     Elements rawDatum = doc.select("item");
                     
                     for(Element rawData: rawDatum) {
-                        System.out.println(rawData.getElementsByTag("category").text().trim());
-                        System.out.println(rawData.getElementsByTag("obsrValue").text().trim());
-                        rawWeatherValue.put(rawData.getElementsByTag("category").text().trim(), rawData.getElementsByTag("obsrValue").text().trim());
+                        System.out.println(
+                                rawData.getElementsByTag("category").text().trim()
+                        );
+                        System.out.println(
+                                rawData.getElementsByTag("obsrValue").text().trim()
+                        );
+                        rawWeatherValue.put(
+                                rawData.getElementsByTag("category").text().trim(),
+                                rawData.getElementsByTag("obsrValue").text().trim()
+                        );
                     }
                     
-                    // T1H : 기온 (°C), RN1 : 1시간 강수량(mm), SKY : 하늘상태 (1: 맑음, 2: 구름조금,
-                    // 3: 구름많음, 4: 흐림), UUU : 동서바람성분, VVV : 남북바람성분, REH : 습도(%),
-                    // PTY : 강수형태 (0: 없음, 1: 비, 2: 비/눈, 3: 눈), LGT : 낙뢰 (0: 없음, 1: 있음),
+                    // T1H : 기온 (°C), RN1 : 1시간 강수량(mm), UUU : 동서바람성분, VVV : 남북바람성분,
+                    // REH : 습도(%), PTY : 강수형태 (0: 없음, 1: 비, 2: 비/눈, 3: 눈),
                     // VEC : 풍향(방위각), WSD : 풍속 (m/s)
                     
                     /*
                     * 아이콘 결정 매커니즘
+                    * (deprecated - 2018-10-21)
                     * 1. PTY 확인 -> 1 이상이면 상황에 맞게 표기, 0이면 다음.
                     * 2. SKY 확인 -> 상황에 맞게 표기
+                    * (revision - 2018-10-21)
+                    * PTY 값에 따라 결정
                     * */
                     
-                    if(Integer.parseInt(rawWeatherValue.get("PTY")) > 1) {
+                    if(Integer.parseInt(rawWeatherValue.get("PTY")) >= 0) {
                         switch ( Integer.parseInt(rawWeatherValue.get("PTY")) ) {
+                            case 0:
+                                weatherIcon = 1;
+                                break;
                             case 1:
                                 weatherIcon = 5;
                                 break;
@@ -393,30 +445,17 @@ public class MainActivity extends AppCompatActivity {
                                 weatherIcon = 7;
                                 break;
                         }
-                    } else {
-                        switch ( Integer.parseInt(rawWeatherValue.get("SKY")) ) {
-                            case 1:
-                                weatherIcon = 1;
-                                break;
-                            case 2:
-                                weatherIcon = 2;
-                                break;
-                            case 3:
-                                weatherIcon = 3;
-                                break;
-                            case 4:
-                                weatherIcon = 4;
-                                break;
-                        }
                     }
                     
-                    if(Double.parseDouble(rawWeatherValue.get("T1H")) <= -900 || Double.parseDouble(rawWeatherValue.get("T1H")) >= 900) {
+                    if(Double.parseDouble(rawWeatherValue.get("T1H")) <= -900
+                            || Double.parseDouble(rawWeatherValue.get("T1H")) >= 900) {
                         weatherT1H = " - °C";
                     } else {
                         weatherT1H = rawWeatherValue.get("T1H") + " °C";
                     }
                     
-                    if(Double.parseDouble(rawWeatherValue.get("REH")) <= -900 || Double.parseDouble(rawWeatherValue.get("REH")) >= 900) {
+                    if(Double.parseDouble(rawWeatherValue.get("REH")) <= -900
+                            || Double.parseDouble(rawWeatherValue.get("REH")) >= 900) {
                         weatherREH = " - %";
                     } else {
                         weatherREH = rawWeatherValue.get("REH") + " %";
@@ -425,23 +464,27 @@ public class MainActivity extends AppCompatActivity {
                     weatherETC = "";
                     
                     weatherETC += "강수량 ";
-                    if(Double.parseDouble(rawWeatherValue.get("RN1")) <= -900 || Double.parseDouble(rawWeatherValue.get("RN1")) >= 900) {
+                    if(Double.parseDouble(rawWeatherValue.get("RN1")) <= -900
+                            || Double.parseDouble(rawWeatherValue.get("RN1")) >= 900) {
                         weatherETC += "- mm / ";
                     } else {
                         weatherETC += rawWeatherValue.get("RN1") + " mm / ";
                     }
                     
                     weatherETC += "풍속 ";
-                    if(Double.parseDouble(rawWeatherValue.get("WSD")) <= -900 || Double.parseDouble(rawWeatherValue.get("WSD")) >= 900) {
+                    if(Double.parseDouble(rawWeatherValue.get("WSD")) <= -900
+                            || Double.parseDouble(rawWeatherValue.get("WSD")) >= 900) {
                         weatherETC += "- m/s ";
                     } else {
                         weatherETC += rawWeatherValue.get("WSD") + " m/s ";
                     }
                     
-                    if(Double.parseDouble(rawWeatherValue.get("VEC")) <= -900 || Double.parseDouble(rawWeatherValue.get("VEC")) >= 900) {
+                    if(Double.parseDouble(rawWeatherValue.get("VEC")) <= -900
+                            || Double.parseDouble(rawWeatherValue.get("VEC")) >= 900) {
                         weatherETC += "데이터 없음";
                     } else {
-                        int vector = (int)((Double.parseDouble(rawWeatherValue.get("VEC")) / 22.5) + 0.5);
+                        int vector = (int)
+                                ((Double.parseDouble(rawWeatherValue.get("VEC")) / 22.5) + 0.5);
                         switch(vector) {
                             case 0:
                             case 16:
@@ -542,27 +585,93 @@ public class MainActivity extends AppCompatActivity {
         scheduleHandler = new ScheduleHandler();
         weatherHandler = new WeatherHandler();
         
-        Button open = findViewById(R.id.open);
+        initScreen();
+        initScreenData();
+        
+    }
+    
+    public static float convertDpToPixel(float dp, Context context){
+        Resources resources = context.getResources();
+        DisplayMetrics metrics = resources.getDisplayMetrics();
+        return dp * ((float)metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+    }
+    
+    private void initScreen() {
+        
+        final ConstraintLayout mainPanel = findViewById(R.id.main_panel);
+        final ConstraintLayout weatherPanel = findViewById(R.id.weather_panel);
+        final ConstraintLayout mealPanel = findViewById(R.id.meal_panel);
+        
+        final Button open = findViewById(R.id.open);
         open.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "접근 확인됨. 패널을 펼칩니다.", Toast.LENGTH_SHORT).show();
+                mainPanel
+                        .animate()
+                        .translationXBy(-convertDpToPixel(512-16, getApplicationContext()))
+                        .translationYBy(convertDpToPixel(1024-16, getApplicationContext()))
+                        .setDuration(1000)
+                        .setListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+        
+                    }
+    
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        weatherPanel.setVisibility(View.VISIBLE);
+                        mealPanel.setVisibility(View.VISIBLE);
+                    }
+    
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+        
+                    }
+    
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+        
+                    }
+                }).withLayer();
             }
         });
-        
+    
         Button close = findViewById(R.id.close);
         close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "안녕히 가십시오.", Toast.LENGTH_SHORT).show();
+                mainPanel
+                        .animate()
+                        .translationXBy(convertDpToPixel(512-16, getApplicationContext()))
+                        .translationYBy(-convertDpToPixel(1024-16, getApplicationContext()))
+                        .setDuration(1000)
+                        .setListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                        weatherPanel.setVisibility(View.INVISIBLE);
+                        mealPanel.setVisibility(View.INVISIBLE);
+                    }
+    
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+        
+                    }
+    
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+        
+                    }
+    
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+        
+                    }
+                }).withLayer();
             }
         });
-        
-        initScreen();
-        
     }
     
-    private void initScreen() {
+    private void initScreenData() {
         
         clock.start();
         schedule.start();
