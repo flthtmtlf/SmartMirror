@@ -76,8 +76,8 @@
         android:id="@+id/main_panel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="512dp"
-        android:layout_marginBottom="1024dp"
+        android:layout_marginStart="620dp"
+        android:layout_marginBottom="960dp"
         app:layout_constraintBottom_toTopOf="@+id/news_panel"
         app:layout_constraintStart_toStartOf="parent">
 
@@ -87,7 +87,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:alpha="1.0"
-            android:visibility="invisible"
+            android:background="@android:color/transparent"
             app:layout_constraintBottom_toBottomOf="@+id/clock_panel"
             app:layout_constraintEnd_toEndOf="parent">
 
@@ -137,7 +137,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="32dp"
             android:layout_marginBottom="16dp"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -184,7 +184,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:visibility="invisible"
+            android:background="@android:color/transparent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 

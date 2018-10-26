@@ -602,6 +602,7 @@ public class MainActivity extends AppCompatActivity {
     }
     
     public boolean isPanelActive = false;
+    public boolean isPanelActivated = false;
     
     private void initScreen() {
         
@@ -611,31 +612,46 @@ public class MainActivity extends AppCompatActivity {
         final View newsPanel = findViewById(R.id.news_panel);
         
         mainPanel.animate()
-                .alphaBy(-0.4f)
-                .scaleXBy(2.0f)
-                .scaleYBy(2.0f);
+                .alphaBy(-0.3f)
+                .scaleXBy(1.2f)
+                .scaleYBy(1.2f);
         newsPanel.animate()
                 .translationYBy(convertDpToPixel(32, getApplicationContext()));
+        weatherPanel.animate()
+                .alpha(0.0f)
+                .withLayer();
+        mealPanel.animate()
+                .alpha(0.0f)
+                .withLayer();
         
         final Button open = findViewById(R.id.open);
         open.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!isPanelActive) {
+                if(!isPanelActive && !isPanelActivated) {
                     isPanelActive = true;
                     mainPanel
                             .animate()
-                            .alphaBy(0.4f)
-                            .scaleXBy(0.5f)
-                            .scaleYBy(0.5f)
-                            .translationXBy(-convertDpToPixel(512-16, getApplicationContext()))
-                            .translationYBy(convertDpToPixel(1024-16, getApplicationContext()))
+                            .alphaBy(0.3f)
+                            .scaleX(1.0f)
+                            .scaleY(1.0f)
+                            .translationXBy(-convertDpToPixel(620-24, getApplicationContext()))
+                            .translationYBy(convertDpToPixel(960-16, getApplicationContext()))
                             .setDuration(2000)
                             .withEndAction(new Runnable() {
                                 @Override
                                 public void run() {
-                                    weatherPanel.setVisibility(View.VISIBLE);
-                                    mealPanel.setVisibility(View.VISIBLE);
+                                    mealPanel.animate()
+                                            .alpha(1.0f)
+                                            .setDuration(500)
+                                            .translationXBy(convertDpToPixel(16, getApplicationContext()))
+                                            .withLayer();
+                                    weatherPanel.animate()
+                                            .alpha(1.0f)
+                                            .setDuration(500)
+                                            .translationYBy(-convertDpToPixel(16, getApplicationContext()))
+                                            .withLayer();
+                                    isPanelActivated = true;
                                 }
                             })
                             .withLayer();
@@ -643,7 +659,7 @@ public class MainActivity extends AppCompatActivity {
                             .animate()
                             .translationYBy(-convertDpToPixel(32, getApplicationContext()))
                             .alpha(1.0f)
-                            .setDuration(2000)
+                            .setDuration(1000)
                             .withEndAction(new Runnable() {
                                 @Override
                                 public void run() {
@@ -660,21 +676,30 @@ public class MainActivity extends AppCompatActivity {
         close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isPanelActive) {
+                if(isPanelActive && isPanelActivated) {
                     isPanelActive = false;
                     mainPanel
                             .animate()
-                            .alphaBy(-0.4f)
-                            .scaleXBy(2.0f)
-                            .scaleYBy(2.0f)
-                            .translationXBy(convertDpToPixel(512-16, getApplicationContext()))
-                            .translationYBy(-convertDpToPixel(1024-16, getApplicationContext()))
+                            .alphaBy(-0.3f)
+                            .scaleXBy(1.2f)
+                            .scaleYBy(1.2f)
+                            .translationXBy(convertDpToPixel(620-24, getApplicationContext()))
+                            .translationYBy(-convertDpToPixel(960-16, getApplicationContext()))
                             .setDuration(2000)
                             .withStartAction(new Runnable() {
                                 @Override
                                 public void run() {
-                                    weatherPanel.setVisibility(View.INVISIBLE);
-                                    mealPanel.setVisibility(View.INVISIBLE);
+                                    mealPanel.animate()
+                                            .alpha(0.0f)
+                                            .setDuration(500)
+                                            .translationXBy(-convertDpToPixel(16, getApplicationContext()))
+                                            .withLayer();
+                                    weatherPanel.animate()
+                                            .alpha(0.0f)
+                                            .setDuration(500)
+                                            .translationYBy(convertDpToPixel(16, getApplicationContext()))
+                                            .withLayer();
+                                    isPanelActivated = false;
                                 }
                             })
                             .withLayer();
@@ -682,8 +707,8 @@ public class MainActivity extends AppCompatActivity {
                             .animate()
                             .translationYBy(convertDpToPixel(32, getApplicationContext()))
                             .alpha(0.0f)
-                            .setDuration(2000)
-                            .withEndAction(new Runnable() {
+                            .setDuration(1000)
+                            .withStartAction(new Runnable() {
                                 @Override
                                 public void run() {
                                     View schedule = findViewById(R.id.schedule);
