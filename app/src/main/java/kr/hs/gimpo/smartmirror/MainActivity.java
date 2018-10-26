@@ -229,7 +229,26 @@ public class MainActivity extends AppCompatActivity {
         
                     lunchToday = menu_list.get(day - 1).lunch;
                     dinnerToday = menu_list.get(day - 1).dinner;
-                    scheduleToday = schedules_list.get(day - 1).schedule;
+                    //scheduleToday = schedules_list.get(day - 1).schedule;
+                    StringBuilder sb = new StringBuilder();
+                    Calendar oneWeek = Calendar.getInstance();
+                    for(int i = 1; i <= 7; i++) {
+                        if(schedules_list.get(day - i).schedule.compareTo("등록된 일정이 없습니다.") != 0 && schedules_list.get(day - i).schedule.compareTo("토요휴업일") != 0) {
+                            String dd = new SimpleDateFormat("dd", Locale.getDefault()).format(oneWeek.getTime());
+                            if(dd.compareTo("01") == 0) {
+                                sb.append(new SimpleDateFormat("MM/dd", Locale.getDefault()).format(oneWeek.getTime()));
+                            } else {
+                                sb.append(dd);
+                            }
+                            sb.append(" - ");
+                            sb.append(schedules_list.get(day - i).schedule);
+                            sb.append("\n");
+                        } else {
+                            continue;
+                        }
+                    }
+                    
+                    scheduleToday = sb.toString();
         
                     Message message = scheduleHandler.obtainMessage();
                     scheduleHandler.sendMessage(message);
