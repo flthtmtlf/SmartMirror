@@ -55,6 +55,23 @@ public class MainActivity extends AppCompatActivity {
     List<SchoolMenu> menu_list;
     List<SchoolSchedule> schedules_list;
     
+    Runnable panelActivator = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                Thread.sleep(3000);
+            
+                isPanelActivated = !isPanelActivated;
+            
+                panelActivation.interrupt();
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
+    
+    Thread panelActivation = new Thread(panelActivator);
+    
     Thread clock = new Thread(new Runnable() {
         @Override
         public void run() {
@@ -104,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
                 
                 
                     NextNewsData
-                            .add("[단독] 스마트 미러 개발팀 '파란색 새우튀김', 팀명을 정한 계기는?");
+                            .add("[단독] 스마트 미러 개발팀 'TechStudio', 팀명을 정한 계기는?");
                     NextNewsData
                             .add("[단독] 김포고등학교 스마트 미러 시스템 개발 중... " +
                                     "10월 31일 수요일 공개");
@@ -243,6 +260,7 @@ public class MainActivity extends AppCompatActivity {
                             sb.append(" - ");
                             sb.append(schedules_list.get(day - i).schedule);
                             sb.append("\n");
+                            oneWeek.add(Calendar.DATE, 1);
                         } else {
                             continue;
                         }
@@ -608,6 +626,11 @@ public class MainActivity extends AppCompatActivity {
         timeHandler = new TimeHandler();
         scheduleHandler = new ScheduleHandler();
         weatherHandler = new WeatherHandler();
+    
+        mainPanel = findViewById(R.id.main_panel);
+        weatherPanel = findViewById(R.id.weather_panel);
+        mealPanel = findViewById(R.id.meal_panel);
+        newsPanel = findViewById(R.id.news_panel);
         
         initScreen();
         initScreenData();
@@ -622,24 +645,117 @@ public class MainActivity extends AppCompatActivity {
     
     public boolean isPanelActive = false;
     public boolean isPanelActivated = false;
+    View mainPanel, weatherPanel, mealPanel, newsPanel;
+    
+    private void setPanelOpen() {
+        if(!isPanelActive && !isPanelActivated) {
+            isPanelActive = true;
+            
+            panelActivation = new Thread(panelActivator);
+            panelActivation.start();
+            
+            mainPanel
+                    .animate()
+                    .alphaBy(0.5f)
+                    .scaleX(1.0f)
+                    .scaleY(1.0f)
+                    .translationXBy(-convertDpToPixel(540-24, getApplicationContext()))
+                    .translationYBy(convertDpToPixel(960-16, getApplicationContext()))
+                    .setDuration(2000)
+                    .withEndAction(new Runnable() {
+                        @Override
+                        public void run() {
+                            mealPanel.animate()
+                                    .alpha(1.0f)
+                                    .setDuration(500)
+                                    .translationXBy(convertDpToPixel(16, getApplicationContext()))
+                                    .withLayer();
+                            weatherPanel.animate()
+                                    .alpha(1.0f)
+                                    .setDuration(500)
+                                    .translationYBy(-convertDpToPixel(16, getApplicationContext()))
+                                    .withLayer();
+                        }
+                    })
+                    .withLayer();
+            newsPanel
+                    .animate()
+                    .translationYBy(-convertDpToPixel(32, getApplicationContext()))
+                    .alpha(1.0f)
+                    .setDuration(1000)
+                    .withEndAction(new Runnable() {
+                        @Override
+                        public void run() {
+                            View schedule = findViewById(R.id.schedule);
+                            schedule.setVisibility(View.VISIBLE);
+                        }
+                    })
+                    .withLayer();
+            
+        }
+    }
+    
+    private void setPanelClose() {
+        if(isPanelActive && isPanelActivated) {
+            isPanelActive = false;
+            
+            panelActivation = new Thread(panelActivator);
+            panelActivation.start();
+            
+            mainPanel
+                    .animate()
+                    .alphaBy(-0.5f)
+                    .scaleXBy(1.2f)
+                    .scaleYBy(1.2f)
+                    .translationXBy(convertDpToPixel(540 - 24, getApplicationContext()))
+                    .translationYBy(-convertDpToPixel(960 - 16, getApplicationContext()))
+                    .setDuration(2000)
+                    .withStartAction(new Runnable() {
+                        @Override
+                        public void run() {
+                            mealPanel.animate()
+                                    .alpha(0.0f)
+                                    .setDuration(500)
+                                    .translationXBy(-convertDpToPixel(16, getApplicationContext()))
+                                    .withLayer();
+                            weatherPanel.animate()
+                                    .alpha(0.0f)
+                                    .setDuration(500)
+                                    .translationYBy(convertDpToPixel(16, getApplicationContext()))
+                                    .withLayer();
+                        }
+                    })
+                    .withLayer();
+            newsPanel
+                    .animate()
+                    .translationYBy(convertDpToPixel(32, getApplicationContext()))
+                    .alpha(0.0f)
+                    .setDuration(1000)
+                    .withStartAction(new Runnable() {
+                        @Override
+                        public void run() {
+                            View schedule = findViewById(R.id.schedule);
+                            schedule.setVisibility(View.INVISIBLE);
+                        }
+                    })
+                    .withLayer();
+        }
+    }
     
     private void initScreen() {
         
-        final View mainPanel = findViewById(R.id.main_panel);
-        final View weatherPanel = findViewById(R.id.weather_panel);
-        final View mealPanel = findViewById(R.id.meal_panel);
-        final View newsPanel = findViewById(R.id.news_panel);
-        
         mainPanel.animate()
-                .alphaBy(-0.3f)
+                .alphaBy(-0.5f)
                 .scaleXBy(1.2f)
                 .scaleYBy(1.2f);
         newsPanel.animate()
                 .translationYBy(convertDpToPixel(32, getApplicationContext()));
         weatherPanel.animate()
+                .translationYBy(convertDpToPixel(16, getApplicationContext()))
                 .alpha(0.0f)
                 .withLayer();
         mealPanel.animate()
+                .translationXBy(-convertDpToPixel(16, getApplicationContext()))
                 .alpha(0.0f)
                 .withLayer();
         
@@ -647,47 +763,7 @@ public class MainActivity extends AppCompatActivity {
         open.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!isPanelActive && !isPanelActivated) {
-                    isPanelActive = true;
-                    mainPanel
-                            .animate()
-                            .alphaBy(0.3f)
-                            .scaleX(1.0f)
-                            .scaleY(1.0f)
-                            .translationXBy(-convertDpToPixel(620-24, getApplicationContext()))
-                            .translationYBy(convertDpToPixel(960-16, getApplicationContext()))
-                            .setDuration(2000)
-                            .withEndAction(new Runnable() {
-                                @Override
-                                public void run() {
-                                    mealPanel.animate()
-                                            .alpha(1.0f)
-                                            .setDuration(500)
-                                            .translationXBy(convertDpToPixel(16, getApplicationContext()))
-                                            .withLayer();
-                                    weatherPanel.animate()
-                                            .alpha(1.0f)
-                                            .setDuration(500)
-                                            .translationYBy(-convertDpToPixel(16, getApplicationContext()))
-                                            .withLayer();
-                                    isPanelActivated = true;
-                                }
-                            })
-                            .withLayer();
-                    newsPanel
-                            .animate()
-                            .translationYBy(-convertDpToPixel(32, getApplicationContext()))
-                            .alpha(1.0f)
-                            .setDuration(1000)
-                            .withEndAction(new Runnable() {
-                                @Override
-                                public void run() {
-                                    View schedule = findViewById(R.id.schedule);
-                                    schedule.setVisibility(View.VISIBLE);
-                                }
-                            })
-                            .withLayer();
-                }
+                setPanelOpen();
             }
         });
     
@@ -695,47 +771,7 @@ public class MainActivity extends AppCompatActivity {
         close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isPanelActive && isPanelActivated) {
-                    isPanelActive = false;
-                    mainPanel
-                            .animate()
-                            .alphaBy(-0.3f)
-                            .scaleXBy(1.2f)
-                            .scaleYBy(1.2f)
-                            .translationXBy(convertDpToPixel(620-24, getApplicationContext()))
-                            .translationYBy(-convertDpToPixel(960-16, getApplicationContext()))
-                            .setDuration(2000)
-                            .withStartAction(new Runnable() {
-                                @Override
-                                public void run() {
-                                    mealPanel.animate()
-                                            .alpha(0.0f)
-                                            .setDuration(500)
-                                            .translationXBy(-convertDpToPixel(16, getApplicationContext()))
-                                            .withLayer();
-                                    weatherPanel.animate()
-                                            .alpha(0.0f)
-                                            .setDuration(500)
-                                            .translationYBy(convertDpToPixel(16, getApplicationContext()))
-                                            .withLayer();
-                                    isPanelActivated = false;
-                                }
-                            })
-                            .withLayer();
-                    newsPanel
-                            .animate()
-                            .translationYBy(convertDpToPixel(32, getApplicationContext()))
-                            .alpha(0.0f)
-                            .setDuration(1000)
-                            .withStartAction(new Runnable() {
-                                @Override
-                                public void run() {
-                                    View schedule = findViewById(R.id.schedule);
-                                    schedule.setVisibility(View.INVISIBLE);
-                                }
-                            })
-                            .withLayer();
-                }
+                setPanelClose();
             }
         });
     }
@@ -801,6 +837,17 @@ public class MainActivity extends AppCompatActivity {
             wt1h.setText(weatherT1H);
             wreh.setText(weatherREH);
             wetc.setText(weatherETC);
+        }
+    }
+    
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        
+        if(!isPanelActive && !isPanelActivated) {
+            setPanelOpen();
+        } else if(isPanelActive && isPanelActivated) {
+            setPanelClose();
         }
     }
 }
