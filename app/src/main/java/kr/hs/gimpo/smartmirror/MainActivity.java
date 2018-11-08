@@ -55,6 +55,11 @@ public class MainActivity extends AppCompatActivity {
     List<SchoolMenu> menu_list;
     List<SchoolSchedule> schedules_list;
     
+    public final static int X_PADDING_ORIGIN = 540;
+    public final static int Y_PADDING_ORIGIN = 960;
+    public final static int X_PADDING = 80;
+    public final static int Y_PADDING = 16;
+    
     Runnable panelActivator = new Runnable() {
         @Override
         public void run() {
@@ -123,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
                     NextNewsData
                             .add("[단독] 스마트 미러 개발팀 'TechStudio', 팀명을 정한 계기는?");
                     NextNewsData
-                            .add("[단독] 김포고등학교 스마트 미러 시스템 개발 중... " +
+                            .add("[단독] 김포고등학교 스마트 미러 시스템 개발 완료돼... " +
                                     "10월 31일 수요일 공개");
                     NextNewsData
                             .add("[단독] 스마트 미러 개발팀 " +
@@ -266,7 +271,11 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                     
-                    scheduleToday = sb.toString();
+                    if(sb.toString().compareTo("") == 0) {
+                        scheduleToday = "등록된 일정이 없습니다.";
+                    } else {
+                        scheduleToday = sb.toString();
+                    }
         
                     Message message = scheduleHandler.obtainMessage();
                     scheduleHandler.sendMessage(message);
@@ -659,8 +668,8 @@ public class MainActivity extends AppCompatActivity {
                     .alphaBy(0.5f)
                     .scaleX(1.0f)
                     .scaleY(1.0f)
-                    .translationXBy(-convertDpToPixel(540-24, getApplicationContext()))
-                    .translationYBy(convertDpToPixel(960-16, getApplicationContext()))
+                    .translationXBy(-convertDpToPixel(X_PADDING_ORIGIN - X_PADDING, getApplicationContext()))
+                    .translationYBy(convertDpToPixel(Y_PADDING_ORIGIN - Y_PADDING, getApplicationContext()))
                     .setDuration(2000)
                     .withEndAction(new Runnable() {
                         @Override
@@ -707,8 +716,8 @@ public class MainActivity extends AppCompatActivity {
                     .alphaBy(-0.5f)
                     .scaleXBy(1.2f)
                     .scaleYBy(1.2f)
-                    .translationXBy(convertDpToPixel(540 - 24, getApplicationContext()))
-                    .translationYBy(-convertDpToPixel(960 - 16, getApplicationContext()))
+                    .translationXBy(convertDpToPixel(X_PADDING_ORIGIN - X_PADDING, getApplicationContext()))
+                    .translationYBy(-convertDpToPixel(Y_PADDING_ORIGIN - Y_PADDING, getApplicationContext()))
                     .setDuration(2000)
                     .withStartAction(new Runnable() {
                         @Override
